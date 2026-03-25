@@ -115,7 +115,12 @@ export default function DocDetails({ doc, assets, onClose }) {
               <div className="mt-6 space-y-6">
                 {steps.map((step, idx) => (
                   <div key={step.title ?? idx} id={`step-${idx + 1}`} className="rounded-[12px] border border-[#e5e7eb] p-5">
-                    <h3 className="text-[20px] font-semibold text-[#101828]">{`${idx + 1}. ${step.title}`}</h3>
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#155dfc] text-sm font-semibold text-white">
+                        {idx + 1}
+                      </span>
+                      <h3 className="text-[20px] font-semibold text-[#101828]">{step.title}</h3>
+                    </div>
                     <p className="mt-2 text-[16px] leading-6 text-[#364153]">{step.description}</p>
                     {step.code ? (
                       <pre className="mt-3 overflow-x-auto rounded-[10px] bg-[#101828] p-4 text-[13px] leading-5 text-[#f3f4f6]">
@@ -188,7 +193,7 @@ export default function DocDetails({ doc, assets, onClose }) {
                           className={[
                             "mt-0.5 flex h-5 w-5 items-center justify-center rounded-[2px] border text-[12px]",
                             isChecked
-                              ? "border-[#c8b24f] bg-[#b39b35] text-white"
+                              ? "border-[#155dfc] bg-[#155dfc] text-white"
                               : "border-[#bfc4cc] bg-white text-transparent",
                           ].join(" ")}
                           aria-hidden="true"

@@ -1,8 +1,14 @@
 import { docPageAssets } from "../Data/docPageAssets.js";
-import { categories, docsData, getFeaturedDocs, getRecentDocs } from "../Data/docs-data.js";
+import {
+  categories,
+  docsData,
+  getFeaturedDocs,
+  getRecentDocs,
+} from "../Data/docs-data.js";
 import DocPageCard from "../components/DocPageCard.jsx";
 import DocDetails from "../components/DocDetails.jsx";
-import DocSearchEmptyState from "../components/DocSearchEmptyState.jsx";
+import DocSearchEmpty from "../components/DocSearchEmpty.jsx";
+import DocPageMode from "../components/DocPageMode.jsx";
 import { HERO, useDocPageModel } from "../model/DocPage.js";
 
 function DocPageSectionTitle({ icon, title }) {
@@ -53,7 +59,9 @@ export default function DocPage() {
               alt=""
               src={docPageAssets.heroPillIcon}
             />
-            <span className="text-sm font-medium leading-5">{HERO.pillText}</span>
+            <span className="text-sm font-medium leading-5">
+              {HERO.pillText}
+            </span>
           </div>
 
           <h1
@@ -63,7 +71,10 @@ export default function DocPage() {
           >
             {HERO.title}
           </h1>
-          <p className="mt-4 mb-0 text-center text-xl font-normal leading-7 text-(--muted)" data-node-id="2:13">
+          <p
+            className="mt-4 mb-0 text-center text-xl font-normal leading-7 text-(--muted)"
+            data-node-id="2:13"
+          >
             {HERO.subtitle}
           </p>
         </div>
@@ -72,11 +83,7 @@ export default function DocPage() {
           className="mx-auto mt-8 mb-16 flex max-w-[672px] items-center gap-3 rounded-[14px] border border-[#d1d5dc] px-4 py-4"
           data-node-id="2:15"
         >
-          <img
-            className="block size-5"
-            alt=""
-            src={docPageAssets.searchIcon}
-          />
+          <img className="block size-5" alt="" src={docPageAssets.searchIcon} />
           <input
             type="text"
             value={query}
@@ -90,49 +97,31 @@ export default function DocPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1151px] px-6 pt-12 pb-24" data-node-id="2:21">
+      <main
+        className="mx-auto max-w-[1151px] px-6 pt-12 pb-24"
+        data-node-id="2:21"
+      >
         {isSearching ? (
           searchResults.length > 0 ? (
-            <section className="mb-12">
-              <div className="mb-6 flex items-center justify-between">
-                <h2 className="m-0 text-[24px] font-bold leading-8 text-[#101828]">
-                  {`Search Results for "${submittedQuery}"`}
-                </h2>
-                <button
-                  type="button"
-                  className="text-sm font-medium text-[#155dfc] hover:text-[#1447e6]"
-                  onClick={clearSearch}
-                >
-                  Clear filters
-                </button>
-              </div>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {searchResults.map((card) => (
-                  <DocPageCard key={card.id} card={card} assets={docPageAssets} onSelect={setSelectedDoc} />
-                ))}
-              </div>
-            </section>
+            <DocPageMode
+              title={`Search Results for "${submittedQuery}"`}
+              cards={searchResults}
+              assets={docPageAssets}
+              onSelectDoc={setSelectedDoc}
+              onClearFilters={clearSearch}
+            />
           ) : (
-            <DocSearchEmptyState query={submittedQuery} onClear={clearCategory} />
+            <DocSearchEmpty query={submittedQuery} onClear={clearCategory} />
           )
         ) : isCategoryMode ? (
-          <section className="mb-12">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="m-0 text-[40px] font-bold leading-8 text-[#101828]">{selectedCategory}</h2>
-              <button
-                type="button"
-                className="text-sm font-medium text-[#155dfc] hover:text-[#1447e6]"
-                onClick={clearCategory}
-              >
-                Clear filters
-              </button>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {allDocumentation.map((card) => (
-                <DocPageCard key={card.id} card={card} assets={docPageAssets} onSelect={setSelectedDoc} />
-              ))}
-            </div>
-          </section>
+          <DocPageMode
+            title={selectedCategory}
+            titleClassName="m-0 text-[40px] font-bold leading-8 text-[#101828]"
+            cards={allDocumentation}
+            assets={docPageAssets}
+            onSelectDoc={setSelectedDoc}
+            onClearFilters={clearCategory}
+          />
         ) : (
           <>
             {/* Section: Start Here */}
@@ -155,63 +144,63 @@ export default function DocPage() {
 
             {/* Section: Recent Updates */}
             <section className="mb-12" data-node-id="2:126">
-          <DocPageSectionTitle
-            icon={docPageAssets.sectionRecentIcon}
-            title="Recent Updates"
-          />
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {recentUpdates.map((card) => (
-              <DocPageCard
-                key={card.id}
-                card={card}
-                assets={docPageAssets}
-                onSelect={setSelectedDoc}
+              <DocPageSectionTitle
+                icon={docPageAssets.sectionRecentIcon}
+                title="Recent Updates"
               />
-            ))}
-          </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                {recentUpdates.map((card) => (
+                  <DocPageCard
+                    key={card.id}
+                    card={card}
+                    assets={docPageAssets}
+                    onSelect={setSelectedDoc}
+                  />
+                ))}
+              </div>
             </section>
 
             {/* Section: Browse by Category */}
             <section className="mb-12" data-node-id="2:??">
-          <DocPageSectionTitle
-            icon={docPageAssets.sectionBrowseIcon}
-            title="Browse by Category"
-          />
-          <div className="flex flex-wrap gap-2">
-            {browseByCategory.map((label) => (
-              <button
-                key={label}
-                className={[
-                  "cursor-pointer rounded-[10px] border px-3 py-2 text-sm leading-5",
-                  label === selectedCategory
-                    ? "border-[#155dfc] bg-[#155dfc] text-white"
-                    : "border-[#d1d5dc] bg-white text-[#364153]",
-                ].join(" ")}
-                type="button"
-                onClick={() => selectCategory(label)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+              <DocPageSectionTitle
+                icon={docPageAssets.sectionBrowseIcon}
+                title="Browse by Category"
+              />
+              <div className="flex flex-wrap gap-2">
+                {browseByCategory.map((label) => (
+                  <button
+                    key={label}
+                    className={[
+                      "cursor-pointer rounded-[10px] border px-3 py-2 text-sm leading-5",
+                      label === selectedCategory
+                        ? "border-[#155dfc] bg-[#155dfc] text-white"
+                        : "border-[#d1d5dc] bg-white text-[#364153]",
+                    ].join(" ")}
+                    type="button"
+                    onClick={() => selectCategory(label)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </section>
 
             {/* Section: All Documentation */}
             <section className="mb-12" data-node-id="2:??">
-          <DocPageSectionTitle
-            icon={docPageAssets.sectionAllDocsIcon}
-            title="All Documentation"
-          />
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {allDocumentation.map((card) => (
-              <DocPageCard
-                key={card.id}
-                card={card}
-                assets={docPageAssets}
-                onSelect={setSelectedDoc}
+              <DocPageSectionTitle
+                icon={docPageAssets.sectionAllDocsIcon}
+                title="All Documentation"
               />
-            ))}
-          </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {allDocumentation.map((card) => (
+                  <DocPageCard
+                    key={card.id}
+                    card={card}
+                    assets={docPageAssets}
+                    onSelect={setSelectedDoc}
+                  />
+                ))}
+              </div>
             </section>
           </>
         )}

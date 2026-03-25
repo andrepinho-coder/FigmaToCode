@@ -1,11 +1,14 @@
 import DocPageBadge from "./DocPageBadge.jsx";
+import { DOC_COLORS } from "../theme/colors.js";
+import { DOC_STRINGS } from "../theme/strings.js";
 
 export default function DocPageCard({ card, assets, onSelect }) {
   const { badgeLeft, badgeRight, title, description, minutes, date, arrow = "primary" } = card;
 
   return (
     <div
-      className="group flex min-h-[229px] cursor-pointer flex-col rounded-[14px] border border-[#e5e7eb] bg-white p-6 shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(16,24,40,0.14),0_2px_6px_rgba(16,24,40,0.06)] hover:ring-1 hover:ring-[#155dfc]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc] motion-reduce:transition-none motion-reduce:hover:transform-none"
+      className="group flex min-h-[229px] cursor-pointer flex-col rounded-[14px] border bg-white p-6 shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(16,24,40,0.14),0_2px_6px_rgba(16,24,40,0.06)] focus-visible:outline-none motion-reduce:transition-none motion-reduce:hover:transform-none"
+      style={{ borderColor: DOC_COLORS.border.light }}
       role="button"
       tabIndex={0}
       onClick={() => onSelect?.(card)}
@@ -20,12 +23,16 @@ export default function DocPageCard({ card, assets, onSelect }) {
         </div>
       </div>
 
-      <div className="mt-3 text-[20px] font-semibold leading-7 text-[#101828] transition-colors duration-150 group-hover:text-[#155dfc]">
+      <div
+        className="mt-3 text-[20px] font-semibold leading-7 transition-colors duration-150"
+        style={{ color: DOC_COLORS.text.heading }}
+      >
         {title}
       </div>
       <div
-        className="mt-2 max-w-[320px] overflow-hidden text-sm leading-5 text-[#4a5565]"
+        className="mt-2 max-w-[320px] overflow-hidden text-sm leading-5"
         style={{
+          color: DOC_COLORS.text.muted,
           display: "-webkit-box",
           WebkitLineClamp: 2,
           WebkitBoxOrient: "vertical",
@@ -35,25 +42,26 @@ export default function DocPageCard({ card, assets, onSelect }) {
       </div>
 
       <div className="mt-4 flex items-center gap-4">
-        <span className="inline-flex items-center gap-1.5 text-[#6a7282]">
+        <span className="inline-flex items-center gap-1.5" style={{ color: DOC_COLORS.text.caption }}>
           <img className="block size-3.5" alt="" src={assets.metaClockIcon} />
           <span className="text-xs leading-4">{minutes}</span>
         </span>
-        <span className="inline-flex items-center gap-1.5 text-[#6a7282]">
+        <span className="inline-flex items-center gap-1.5" style={{ color: DOC_COLORS.text.caption }}>
           <img className="block size-3.5" alt="" src={assets.metaCalendarIcon} />
           <span className="text-xs leading-4">{date}</span>
         </span>
       </div>
 
       <a
-        className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-medium leading-5 text-[#101828] no-underline visited:text-[#101828]"
+        className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-medium leading-5 no-underline"
+        style={{ color: DOC_COLORS.text.heading }}
         href="#"
         onClick={(e) => {
           e.preventDefault();
           onSelect?.(card);
         }}
       >
-        <span className="text-[#155dfc]">Read more</span>
+        <span style={{ color: DOC_COLORS.brand.primary }}>{DOC_STRINGS.actions.readMore}</span>
         <img
           className="block size-4 transition-transform duration-200 ease-out group-hover:translate-x-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
           alt=""

@@ -10,6 +10,9 @@ import DocDetails from "../components/DocDetails.jsx";
 import DocSearchEmpty from "../components/DocSearchEmpty.jsx";
 import DocPageMode from "../components/DocPageMode.jsx";
 import { HERO, useDocPageModel } from "../model/DocPage.js";
+import { DOC_COLORS } from "../theme/colors.js";
+import { DOC_STRINGS } from "../theme/strings.js";
+import { DOC_TYPO } from "../theme/typography.js";
 
 function DocPageSectionTitle({ icon, title }) {
   return (
@@ -51,7 +54,11 @@ export default function DocPage() {
       >
         <div className="mx-auto max-w-[768px] text-center" data-node-id="2:4">
           <div
-            className="inline-flex items-center gap-2 rounded-full bg-[#eff6ff] px-3 py-1.5 text-[#1447e6]"
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5"
+            style={{
+              backgroundColor: DOC_COLORS.brand.primarySoft,
+              color: DOC_COLORS.brand.primaryHover,
+            }}
             data-node-id="2:5"
           >
             <img
@@ -66,29 +73,34 @@ export default function DocPage() {
 
           <h1
             className="mt-4 mb-0 text-center text-5xl font-bold"
-            style={{ lineHeight: "48px", letterSpacing: "-0.02em" }}
+            style={{
+              lineHeight: DOC_TYPO.hero.lineHeight,
+              letterSpacing: DOC_TYPO.hero.letterSpacing,
+            }}
             data-node-id="2:11"
           >
-            {HERO.title}
+            {DOC_STRINGS.hero.title ?? HERO.title}
           </h1>
           <p
             className="mt-4 mb-0 text-center text-xl font-normal leading-7 text-(--muted)"
             data-node-id="2:13"
           >
-            {HERO.subtitle}
+            {DOC_STRINGS.hero.subtitle ?? HERO.subtitle}
           </p>
         </div>
 
         <div
-          className="mx-auto mt-8 mb-16 flex max-w-[672px] items-center gap-3 rounded-[14px] border border-[#d1d5dc] px-4 py-4"
+          className="mx-auto mt-8 mb-16 flex max-w-[672px] items-center gap-3 rounded-[14px] border px-4 py-4"
+          style={{ borderColor: DOC_COLORS.border.default }}
           data-node-id="2:15"
         >
           <img className="block size-5" alt="" src={docPageAssets.searchIcon} />
           <input
             type="text"
             value={query}
-            placeholder={HERO.searchPlaceholder}
-            className="w-full border-none bg-transparent text-base leading-6 text-[#101828] outline-none placeholder:text-[rgba(10,10,10,0.5)]"
+            placeholder={DOC_STRINGS.hero.searchPlaceholder ?? HERO.searchPlaceholder}
+            className="w-full border-none bg-transparent text-base leading-6 outline-none placeholder:text-[rgba(10,10,10,0.5)]"
+            style={{ color: DOC_COLORS.text.heading }}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") submitSearch();
@@ -104,7 +116,7 @@ export default function DocPage() {
         {isSearching ? (
           searchResults.length > 0 ? (
             <DocPageMode
-              title={`Search Results for "${submittedQuery}"`}
+              title={`${DOC_STRINGS.search.resultsPrefix}${submittedQuery}"`}
               cards={searchResults}
               assets={docPageAssets}
               onSelectDoc={setSelectedDoc}
@@ -116,7 +128,7 @@ export default function DocPage() {
         ) : isCategoryMode ? (
           <DocPageMode
             title={selectedCategory}
-            titleClassName="m-0 text-[40px] font-bold leading-8 text-[#101828]"
+              titleClassName="m-0 text-[40px] font-bold leading-8"
             cards={allDocumentation}
             assets={docPageAssets}
             onSelectDoc={setSelectedDoc}
@@ -128,7 +140,7 @@ export default function DocPage() {
             <section className="mb-12" data-node-id="2:22">
               <DocPageSectionTitle
                 icon={docPageAssets.sectionStartHereIcon}
-                title="Start Here"
+                title={DOC_STRINGS.sections.startHere}
               />
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {startHere.map((card) => (
@@ -146,7 +158,7 @@ export default function DocPage() {
             <section className="mb-12" data-node-id="2:126">
               <DocPageSectionTitle
                 icon={docPageAssets.sectionRecentIcon}
-                title="Recent Updates"
+                title={DOC_STRINGS.sections.recentUpdates}
               />
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 {recentUpdates.map((card) => (
@@ -164,7 +176,7 @@ export default function DocPage() {
             <section className="mb-12" data-node-id="2:??">
               <DocPageSectionTitle
                 icon={docPageAssets.sectionBrowseIcon}
-                title="Browse by Category"
+                title={DOC_STRINGS.sections.browseByCategory}
               />
               <div className="flex flex-wrap gap-2">
                 {browseByCategory.map((label) => (
@@ -173,9 +185,22 @@ export default function DocPage() {
                     className={[
                       "cursor-pointer rounded-[10px] border px-3 py-2 text-sm leading-5",
                       label === selectedCategory
-                        ? "border-[#155dfc] bg-[#155dfc] text-white"
-                        : "border-[#d1d5dc] bg-white text-[#364153]",
+                        ? ""
+                        : "",
                     ].join(" ")}
+                    style={
+                      label === selectedCategory
+                        ? {
+                            borderColor: DOC_COLORS.brand.primary,
+                            backgroundColor: DOC_COLORS.brand.primary,
+                            color: DOC_COLORS.text.inverse,
+                          }
+                        : {
+                            borderColor: DOC_COLORS.border.default,
+                            backgroundColor: DOC_COLORS.surface.base,
+                            color: DOC_COLORS.text.body,
+                          }
+                    }
                     type="button"
                     onClick={() => selectCategory(label)}
                   >
@@ -189,7 +214,7 @@ export default function DocPage() {
             <section className="mb-12" data-node-id="2:??">
               <DocPageSectionTitle
                 icon={docPageAssets.sectionAllDocsIcon}
-                title="All Documentation"
+                title={DOC_STRINGS.sections.allDocumentation}
               />
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {allDocumentation.map((card) => (

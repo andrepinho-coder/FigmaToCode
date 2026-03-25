@@ -6,7 +6,6 @@ import {
   getRecentDocs,
 } from "../Data/docs-data.js";
 import DocPageCard from "../components/DocPageCard.jsx";
-import DocDetails from "../components/DocDetails.jsx";
 import DocSearchEmpty from "../components/DocSearchEmpty.jsx";
 import DocPageMode from "../components/DocPageMode.jsx";
 import { HERO, useDocPageModel } from "../model/DocPage.js";
@@ -23,11 +22,8 @@ function DocPageSectionTitle({ icon, title }) {
   );
 }
 
-export default function DocPage() {
+export default function DocPage({ onOpenDetails }) {
   const {
-    selectedDoc,
-    setSelectedDoc,
-    closeDetails,
     startHere,
     recentUpdates,
     allDocumentation,
@@ -119,7 +115,7 @@ export default function DocPage() {
               title={`${DOC_STRINGS.search.resultsPrefix}${submittedQuery}"`}
               cards={searchResults}
               assets={docPageAssets}
-              onSelectDoc={setSelectedDoc}
+              onSelectDoc={onOpenDetails}
               onClearFilters={clearSearch}
             />
           ) : (
@@ -131,7 +127,7 @@ export default function DocPage() {
               titleClassName="m-0 text-[40px] font-bold leading-8"
             cards={allDocumentation}
             assets={docPageAssets}
-            onSelectDoc={setSelectedDoc}
+            onSelectDoc={onOpenDetails}
             onClearFilters={clearCategory}
           />
         ) : (
@@ -148,7 +144,7 @@ export default function DocPage() {
                     key={card.id}
                     card={card}
                     assets={docPageAssets}
-                    onSelect={setSelectedDoc}
+                    onSelect={onOpenDetails}
                   />
                 ))}
               </div>
@@ -166,7 +162,7 @@ export default function DocPage() {
                     key={card.id}
                     card={card}
                     assets={docPageAssets}
-                    onSelect={setSelectedDoc}
+                    onSelect={onOpenDetails}
                   />
                 ))}
               </div>
@@ -222,7 +218,7 @@ export default function DocPage() {
                     key={card.id}
                     card={card}
                     assets={docPageAssets}
-                    onSelect={setSelectedDoc}
+                    onSelect={onOpenDetails}
                   />
                 ))}
               </div>
@@ -231,24 +227,6 @@ export default function DocPage() {
         )}
       </main>
 
-      {selectedDoc ? (
-        <div
-          className="fixed inset-0 z-50 bg-black/30"
-          role="dialog"
-          aria-modal="true"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeDetails();
-          }}
-        >
-          <div className="absolute inset-0 overflow-y-auto">
-            <DocDetails
-              doc={selectedDoc}
-              assets={docPageAssets}
-              onClose={closeDetails}
-            />
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }

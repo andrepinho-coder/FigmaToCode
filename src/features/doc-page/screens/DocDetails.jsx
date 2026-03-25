@@ -169,7 +169,7 @@ export default function DocDetails({ doc, assets, onClose }) {
               <h2 className="text-[30px] font-bold leading-[36px] text-[#101828]">Setup checklist</h2>
               <div className="mt-6 rounded-[14px] border border-[#e5e7eb] bg-white px-6 py-5">
                 <p className="text-[16px] leading-6 text-[#4a5565]">
-                  Use this checklist to ensure you&apos;ve completed all steps:
+                  Use this checklist to ensure you've completed all steps:
                 </p>
                 <div className="mt-4 flex flex-col gap-3">
                   {checklistItems.map((item) => {
@@ -248,4 +248,3 @@ export default function DocDetails({ doc, assets, onClose }) {
     </div>
   );
 }
-

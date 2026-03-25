@@ -56,7 +56,6 @@ function toDocCard(doc, index = 0, section = "all") {
 }
 
 export function useDocPageModel({ categories, docsData, getFeaturedDocs, getRecentDocs }) {
-  const [selectedDoc, setSelectedDoc] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
@@ -108,7 +107,6 @@ export function useDocPageModel({ categories, docsData, getFeaturedDocs, getRece
 
   const submitSearch = () => {
     setSubmittedQuery(query.trim());
-    setSelectedDoc(null);
   };
 
   const clearSearch = () => {
@@ -119,21 +117,14 @@ export function useDocPageModel({ categories, docsData, getFeaturedDocs, getRece
   const clearCategory = () => {
     setSelectedCategory("All");
     clearSearch();
-    setSelectedDoc(null);
   };
 
   const selectCategory = (label) => {
     setSelectedCategory(label);
     clearSearch();
-    setSelectedDoc(null);
   };
 
-  const closeDetails = () => setSelectedDoc(null);
-
   return {
-    selectedDoc,
-    setSelectedDoc,
-    closeDetails,
     startHere,
     recentUpdates,
     allDocumentation,

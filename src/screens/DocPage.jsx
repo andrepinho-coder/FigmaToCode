@@ -1,8 +1,9 @@
-import { useState } from "react";
 import { docPageAssets } from "../Data/docPageAssets.js";
 import { categories, docsData, getFeaturedDocs, getRecentDocs } from "../Data/docs-data.js";
 import DocPageCard from "../components/DocPageCard.jsx";
 import DocDetails from "../components/DocDetails.jsx";
+import DocSearchEmptyState from "../components/DocSearchEmptyState.jsx";
+import { HERO, useDocPageModel } from "../model/DocPage.js";
 
 function DocPageSectionTitle({ icon, title }) {
   return (
@@ -14,73 +15,26 @@ function DocPageSectionTitle({ icon, title }) {
 }
 
 export default function DocPage() {
-  const [selectedDoc, setSelectedDoc] = useState(null);
-
-  const hero = {
-    pillText: "Documentation",
-    title: "BusinessWith Documentation",
-    subtitle: "Everything you need to know to get started and grow with BusinessWith",
-    searchPlaceholder: "Search documentation...",
-  };
-
-  const formatDate = (isoDate) => {
-    // docs-data lastUpdated is YYYY-MM-DD
-    const d = new Date(`${isoDate}T00:00:00`);
-    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  };
-
-  const categoryToBadge = (categoryId) => {
-    const map = {
-      "getting-started": { tone: "blue", text: "Getting Started" },
-      integration: { tone: "purple", text: "Integration" },
-      api: { tone: "green", text: "API Reference" },
-      guides: { tone: "amber", text: "Guides" },
-      troubleshooting: { tone: "red", text: "Troubleshooting" },
-    };
-    return map[categoryId] ?? { tone: "blue", text: "Getting Started" };
-  };
-
-  const statusToBadge = (status) => {
-    const map = {
-      published: { tone: "green", text: "Published" },
-      updated: { tone: "blue", text: "Updated" },
-      draft: { tone: "amber", text: "Draft" },
-    };
-    return map[status] ?? { tone: "green", text: "Published" };
-  };
-
-  const toDocCard = (doc, index = 0, section = "all") => {
-    const badgeLeft = categoryToBadge(doc.category);
-    const badgeRight = statusToBadge(doc.status);
-
-    // Match your existing UI style: alternating arrow icons per section.
-    const arrow = (() => {
-      if (section === "startHere") return index === 0 ? "primary" : "alt";
-      if (section === "recentUpdates") return index === 0 ? "primary" : "alt";
-      return index % 2 === 0 ? "primary" : "alt";
-    })();
-
-    return {
-      id: doc.id ?? doc.slug,
-      badgeLeft,
-      badgeRight,
-      title: doc.title,
-      description: doc.description,
-      content: doc.content,
-      minutes: doc.readTime,
-      date: formatDate(doc.lastUpdated),
-      arrow,
-    };
-  };
-
-  const startHereDocs = getFeaturedDocs().slice(0, 3);
-  const recentUpdatesDocs = getRecentDocs(4);
-  const allDocs = docsData;
-
-  const startHere = startHereDocs.map((doc, i) => toDocCard(doc, i, "startHere"));
-  const recentUpdates = recentUpdatesDocs.map((doc, i) => toDocCard(doc, i, "recentUpdates"));
-  const allDocumentation = allDocs.map((doc, i) => toDocCard(doc, i, "all"));
-  const browseByCategory = ["All", ...categories.map((c) => c.name)];
+  const {
+    selectedDoc,
+    setSelectedDoc,
+    closeDetails,
+    startHere,
+    recentUpdates,
+    allDocumentation,
+    browseByCategory,
+    selectedCategory,
+    query,
+    submittedQuery,
+    isSearching,
+    isCategoryMode,
+    searchResults,
+    setQuery,
+    submitSearch,
+    clearSearch,
+    clearCategory,
+    selectCategory,
+  } = useDocPageModel({ categories, docsData, getFeaturedDocs, getRecentDocs });
 
   return (
     <div className="w-full" data-node-id="2:2">
@@ -99,7 +53,7 @@ export default function DocPage() {
               alt=""
               src={docPageAssets.heroPillIcon}
             />
-            <span className="text-sm font-medium leading-5">{hero.pillText}</span>
+            <span className="text-sm font-medium leading-5">{HERO.pillText}</span>
           </div>
 
           <h1
@@ -107,10 +61,10 @@ export default function DocPage() {
             style={{ lineHeight: "48px", letterSpacing: "-0.02em" }}
             data-node-id="2:11"
           >
-            {hero.title}
+            {HERO.title}
           </h1>
           <p className="mt-4 mb-0 text-center text-xl font-normal leading-7 text-(--muted)" data-node-id="2:13">
-            {hero.subtitle}
+            {HERO.subtitle}
           </p>
         </div>
 
@@ -123,37 +77,84 @@ export default function DocPage() {
             alt=""
             src={docPageAssets.searchIcon}
           />
-          <div
-            className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-base leading-6 text-[rgba(10,10,10,0.5)]"
-            role="textbox"
-            aria-label="Search documentation"
-          >
-            {hero.searchPlaceholder}
-          </div>
+          <input
+            type="text"
+            value={query}
+            placeholder={HERO.searchPlaceholder}
+            className="w-full border-none bg-transparent text-base leading-6 text-[#101828] outline-none placeholder:text-[rgba(10,10,10,0.5)]"
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submitSearch();
+            }}
+          />
         </div>
       </header>
 
       <main className="mx-auto max-w-[1151px] px-6 pt-12 pb-24" data-node-id="2:21">
-        {/* Section: Start Here */}
-        <section className="mb-12" data-node-id="2:22">
-          <DocPageSectionTitle
-            icon={docPageAssets.sectionStartHereIcon}
-            title="Start Here"
-          />
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {startHere.map((card) => (
-              <DocPageCard
-                key={card.id}
-                card={card}
-                assets={docPageAssets}
-                onSelect={setSelectedDoc}
+        {isSearching ? (
+          searchResults.length > 0 ? (
+            <section className="mb-12">
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="m-0 text-[24px] font-bold leading-8 text-[#101828]">
+                  {`Search Results for "${submittedQuery}"`}
+                </h2>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-[#155dfc] hover:text-[#1447e6]"
+                  onClick={clearSearch}
+                >
+                  Clear filters
+                </button>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {searchResults.map((card) => (
+                  <DocPageCard key={card.id} card={card} assets={docPageAssets} onSelect={setSelectedDoc} />
+                ))}
+              </div>
+            </section>
+          ) : (
+            <DocSearchEmptyState query={submittedQuery} onClear={clearCategory} />
+          )
+        ) : isCategoryMode ? (
+          <section className="mb-12">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="m-0 text-[40px] font-bold leading-8 text-[#101828]">{selectedCategory}</h2>
+              <button
+                type="button"
+                className="text-sm font-medium text-[#155dfc] hover:text-[#1447e6]"
+                onClick={clearCategory}
+              >
+                Clear filters
+              </button>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {allDocumentation.map((card) => (
+                <DocPageCard key={card.id} card={card} assets={docPageAssets} onSelect={setSelectedDoc} />
+              ))}
+            </div>
+          </section>
+        ) : (
+          <>
+            {/* Section: Start Here */}
+            <section className="mb-12" data-node-id="2:22">
+              <DocPageSectionTitle
+                icon={docPageAssets.sectionStartHereIcon}
+                title="Start Here"
               />
-            ))}
-          </div>
-        </section>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {startHere.map((card) => (
+                  <DocPageCard
+                    key={card.id}
+                    card={card}
+                    assets={docPageAssets}
+                    onSelect={setSelectedDoc}
+                  />
+                ))}
+              </div>
+            </section>
 
-        {/* Section: Recent Updates */}
-        <section className="mb-12" data-node-id="2:126">
+            {/* Section: Recent Updates */}
+            <section className="mb-12" data-node-id="2:126">
           <DocPageSectionTitle
             icon={docPageAssets.sectionRecentIcon}
             title="Recent Updates"
@@ -168,10 +169,10 @@ export default function DocPage() {
               />
             ))}
           </div>
-        </section>
+            </section>
 
-        {/* Section: Browse by Category */}
-        <section className="mb-12" data-node-id="2:??">
+            {/* Section: Browse by Category */}
+            <section className="mb-12" data-node-id="2:??">
           <DocPageSectionTitle
             icon={docPageAssets.sectionBrowseIcon}
             title="Browse by Category"
@@ -182,20 +183,21 @@ export default function DocPage() {
                 key={label}
                 className={[
                   "cursor-pointer rounded-[10px] border px-3 py-2 text-sm leading-5",
-                  label === "All"
+                  label === selectedCategory
                     ? "border-[#155dfc] bg-[#155dfc] text-white"
                     : "border-[#d1d5dc] bg-white text-[#364153]",
                 ].join(" ")}
                 type="button"
+                onClick={() => selectCategory(label)}
               >
                 {label}
               </button>
             ))}
           </div>
-        </section>
+            </section>
 
-        {/* Section: All Documentation */}
-        <section className="mb-12" data-node-id="2:??">
+            {/* Section: All Documentation */}
+            <section className="mb-12" data-node-id="2:??">
           <DocPageSectionTitle
             icon={docPageAssets.sectionAllDocsIcon}
             title="All Documentation"
@@ -210,7 +212,9 @@ export default function DocPage() {
               />
             ))}
           </div>
-        </section>
+            </section>
+          </>
+        )}
       </main>
 
       {selectedDoc ? (
@@ -219,14 +223,14 @@ export default function DocPage() {
           role="dialog"
           aria-modal="true"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedDoc(null);
+            if (e.target === e.currentTarget) closeDetails();
           }}
         >
           <div className="absolute inset-0 overflow-y-auto">
             <DocDetails
               doc={selectedDoc}
               assets={docPageAssets}
-              onClose={() => setSelectedDoc(null)}
+              onClose={closeDetails}
             />
           </div>
         </div>

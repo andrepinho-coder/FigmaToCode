@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { docPageAssets } from "../Data/docPageAssets.js";
-import { docPageData } from "../Data/docPageData.js";
+import { categories, docsData, getFeaturedDocs, getRecentDocs } from "../Data/docs-data.js";
 import DocPageCard from "../components/DocPageCard.jsx";
+import DocDetails from "../components/DocDetails.jsx";
 
 function DocPageSectionTitle({ icon, title }) {
   return (
@@ -12,6 +14,74 @@ function DocPageSectionTitle({ icon, title }) {
 }
 
 export default function DocPage() {
+  const [selectedDoc, setSelectedDoc] = useState(null);
+
+  const hero = {
+    pillText: "Documentation",
+    title: "BusinessWith Documentation",
+    subtitle: "Everything you need to know to get started and grow with BusinessWith",
+    searchPlaceholder: "Search documentation...",
+  };
+
+  const formatDate = (isoDate) => {
+    // docs-data lastUpdated is YYYY-MM-DD
+    const d = new Date(`${isoDate}T00:00:00`);
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  };
+
+  const categoryToBadge = (categoryId) => {
+    const map = {
+      "getting-started": { tone: "blue", text: "Getting Started" },
+      integration: { tone: "purple", text: "Integration" },
+      api: { tone: "green", text: "API Reference" },
+      guides: { tone: "amber", text: "Guides" },
+      troubleshooting: { tone: "red", text: "Troubleshooting" },
+    };
+    return map[categoryId] ?? { tone: "blue", text: "Getting Started" };
+  };
+
+  const statusToBadge = (status) => {
+    const map = {
+      published: { tone: "green", text: "Published" },
+      updated: { tone: "blue", text: "Updated" },
+      draft: { tone: "amber", text: "Draft" },
+    };
+    return map[status] ?? { tone: "green", text: "Published" };
+  };
+
+  const toDocCard = (doc, index = 0, section = "all") => {
+    const badgeLeft = categoryToBadge(doc.category);
+    const badgeRight = statusToBadge(doc.status);
+
+    // Match your existing UI style: alternating arrow icons per section.
+    const arrow = (() => {
+      if (section === "startHere") return index === 0 ? "primary" : "alt";
+      if (section === "recentUpdates") return index === 0 ? "primary" : "alt";
+      return index % 2 === 0 ? "primary" : "alt";
+    })();
+
+    return {
+      id: doc.id ?? doc.slug,
+      badgeLeft,
+      badgeRight,
+      title: doc.title,
+      description: doc.description,
+      content: doc.content,
+      minutes: doc.readTime,
+      date: formatDate(doc.lastUpdated),
+      arrow,
+    };
+  };
+
+  const startHereDocs = getFeaturedDocs().slice(0, 3);
+  const recentUpdatesDocs = getRecentDocs(4);
+  const allDocs = docsData;
+
+  const startHere = startHereDocs.map((doc, i) => toDocCard(doc, i, "startHere"));
+  const recentUpdates = recentUpdatesDocs.map((doc, i) => toDocCard(doc, i, "recentUpdates"));
+  const allDocumentation = allDocs.map((doc, i) => toDocCard(doc, i, "all"));
+  const browseByCategory = ["All", ...categories.map((c) => c.name)];
+
   return (
     <div className="w-full" data-node-id="2:2">
       {/* Hero (title + subtitle + search) */}
@@ -29,7 +99,7 @@ export default function DocPage() {
               alt=""
               src={docPageAssets.heroPillIcon}
             />
-            <span className="text-sm font-medium leading-5">{docPageData.hero.pillText}</span>
+            <span className="text-sm font-medium leading-5">{hero.pillText}</span>
           </div>
 
           <h1
@@ -37,10 +107,10 @@ export default function DocPage() {
             style={{ lineHeight: "48px", letterSpacing: "-0.02em" }}
             data-node-id="2:11"
           >
-            {docPageData.hero.title}
+            {hero.title}
           </h1>
           <p className="mt-4 mb-0 text-center text-xl font-normal leading-7 text-(--muted)" data-node-id="2:13">
-            {docPageData.hero.subtitle}
+            {hero.subtitle}
           </p>
         </div>
 
@@ -58,7 +128,7 @@ export default function DocPage() {
             role="textbox"
             aria-label="Search documentation"
           >
-            {docPageData.hero.searchPlaceholder}
+            {hero.searchPlaceholder}
           </div>
         </div>
       </header>
@@ -71,8 +141,13 @@ export default function DocPage() {
             title="Start Here"
           />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {docPageData.startHere.map((card) => (
-              <DocPageCard key={card.id} card={card} assets={docPageAssets} />
+            {startHere.map((card) => (
+              <DocPageCard
+                key={card.id}
+                card={card}
+                assets={docPageAssets}
+                onSelect={setSelectedDoc}
+              />
             ))}
           </div>
         </section>
@@ -84,8 +159,13 @@ export default function DocPage() {
             title="Recent Updates"
           />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {docPageData.recentUpdates.map((card) => (
-              <DocPageCard key={card.id} card={card} assets={docPageAssets} />
+            {recentUpdates.map((card) => (
+              <DocPageCard
+                key={card.id}
+                card={card}
+                assets={docPageAssets}
+                onSelect={setSelectedDoc}
+              />
             ))}
           </div>
         </section>
@@ -97,7 +177,7 @@ export default function DocPage() {
             title="Browse by Category"
           />
           <div className="flex flex-wrap gap-2">
-            {docPageData.browseByCategory.map((label) => (
+            {browseByCategory.map((label) => (
               <button
                 key={label}
                 className={[
@@ -121,12 +201,36 @@ export default function DocPage() {
             title="All Documentation"
           />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {docPageData.allDocumentation.map((card) => (
-              <DocPageCard key={card.id} card={card} assets={docPageAssets} />
+            {allDocumentation.map((card) => (
+              <DocPageCard
+                key={card.id}
+                card={card}
+                assets={docPageAssets}
+                onSelect={setSelectedDoc}
+              />
             ))}
           </div>
         </section>
       </main>
+
+      {selectedDoc ? (
+        <div
+          className="fixed inset-0 z-50 bg-black/30"
+          role="dialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedDoc(null);
+          }}
+        >
+          <div className="absolute inset-0 overflow-y-auto">
+            <DocDetails
+              doc={selectedDoc}
+              assets={docPageAssets}
+              onClose={() => setSelectedDoc(null)}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

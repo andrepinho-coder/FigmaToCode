@@ -1,10 +1,18 @@
 import DocPageBadge from "./DocPageBadge.jsx";
 
-export default function DocPageCard({ card, assets }) {
+export default function DocPageCard({ card, assets, onSelect }) {
   const { badgeLeft, badgeRight, title, description, minutes, date, arrow = "primary" } = card;
 
   return (
-    <div className="group flex min-h-[229px] cursor-pointer flex-col rounded-[14px] border border-[#e5e7eb] bg-white p-6 shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(16,24,40,0.14),0_2px_6px_rgba(16,24,40,0.06)] hover:ring-1 hover:ring-[#155dfc]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc] motion-reduce:transition-none motion-reduce:hover:transform-none">
+    <div
+      className="group flex min-h-[229px] cursor-pointer flex-col rounded-[14px] border border-[#e5e7eb] bg-white p-6 shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(16,24,40,0.14),0_2px_6px_rgba(16,24,40,0.06)] hover:ring-1 hover:ring-[#155dfc]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#155dfc] motion-reduce:transition-none motion-reduce:hover:transform-none"
+      role="button"
+      tabIndex={0}
+      onClick={() => onSelect?.(card)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") onSelect?.(card);
+      }}
+    >
       <div className="flex min-h-6 items-start justify-between">
         <div className="flex w-full justify-between gap-3">
           <DocPageBadge tone={badgeLeft.tone}>{badgeLeft.text}</DocPageBadge>
@@ -40,7 +48,10 @@ export default function DocPageCard({ card, assets }) {
       <a
         className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-medium leading-5 text-[#101828] no-underline visited:text-[#101828]"
         href="#"
-        onClick={(e) => e.preventDefault()}
+        onClick={(e) => {
+          e.preventDefault();
+          onSelect?.(card);
+        }}
       >
         <span className="text-[#155dfc]">Read more</span>
         <img

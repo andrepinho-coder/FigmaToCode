@@ -1,13 +1,8 @@
-// Mock data for documentation prototype
-// Note: This file is intentionally plain JavaScript (no TypeScript types).
+// Mock documentation: top-level field names align with GraphQL Documentation (businesswith APP_DOCUMENTATION).
+// API uses content as HTML only; this prototype adds structuredContent for the guide-style DocDetails UI.
+// Plain JavaScript (no TypeScript).
 
-export const categories = [
-  { id: 'getting-started', name: 'Getting Started', color: 'bg-blue-100 text-blue-800' },
-  { id: 'integration', name: 'Integration', color: 'bg-purple-100 text-purple-800' },
-  { id: 'api', name: 'API Reference', color: 'bg-green-100 text-green-800' },
-  { id: 'guides', name: 'Guides', color: 'bg-orange-100 text-orange-800' },
-  { id: 'troubleshooting', name: 'Troubleshooting', color: 'bg-red-100 text-red-800' },
-];
+// Categories: `category` must match API strings; chips are derived from data (see documentationCategoriesFromDocs).
 
 export const docsData = [
   {
@@ -15,12 +10,14 @@ export const docsData = [
     slug: 'quick-start-guide',
     title: 'Quick Start Guide',
     description: 'Get up and running with BusinessWith in under 5 minutes',
-    category: 'getting-started',
-    status: 'published',
-    lastUpdated: '2026-03-20',
-    readTime: '5 min',
-    featured: true,
-    content: {
+    category: 'Core',
+    published: true,
+    updatedAt: '2026-03-20T12:00:00.000Z',
+    pageRoute: '/',
+    updatedByUser: { id: 'mock-user-1', name: 'Documentation Team' },
+    mediaAssets: [],
+    content: '',
+    structuredContent: {
       context: 'BusinessWith is a comprehensive platform designed to streamline your business operations, from customer management to analytics. This guide will help you set up your account and understand the core features.',
       problem: 'Many businesses struggle with fragmented tools and workflows. BusinessWith solves this by providing an integrated solution that brings all your business processes into one place.',
       steps: [
@@ -76,12 +73,14 @@ export const docsData = [
     slug: 'api-authentication',
     title: 'API Authentication',
     description: 'Learn how to authenticate your API requests securely',
-    category: 'api',
-    status: 'updated',
-    lastUpdated: '2026-03-22',
-    readTime: '8 min',
-    featured: true,
-    content: {
+    category: 'Systems & Providers',
+    published: true,
+    updatedAt: '2026-03-22T12:00:00.000Z',
+    pageRoute: '/integration-settings',
+    updatedByUser: { id: 'mock-user-1', name: 'Documentation Team' },
+    mediaAssets: [],
+    content: '',
+    structuredContent: {
       context: 'The BusinessWith API uses OAuth 2.0 for secure authentication. This ensures your data remains protected while allowing seamless integration with third-party applications.',
       problem: 'Insecure API access can lead to data breaches and unauthorized access. Our authentication system provides enterprise-grade security while maintaining ease of use.',
       steps: [
@@ -134,12 +133,14 @@ export const docsData = [
     slug: 'webhook-integration',
     title: 'Webhook Integration',
     description: 'Set up webhooks to receive real-time events from BusinessWith',
-    category: 'integration',
-    status: 'updated',
-    lastUpdated: '2026-03-24',
-    readTime: '10 min',
-    featured: true,
-    content: {
+    category: 'Systems & Providers',
+    published: true,
+    updatedAt: '2026-03-24T12:00:00.000Z',
+    pageRoute: '/integration-settings',
+    updatedByUser: { id: 'mock-user-1', name: 'Documentation Team' },
+    mediaAssets: [],
+    content: '',
+    structuredContent: {
       context: 'Webhooks allow your application to receive real-time notifications when events occur in BusinessWith. Instead of polling our API repeatedly, webhooks push data to your server instantly when changes happen.',
       problem: 'Polling APIs for updates is inefficient and can cause delays in detecting important events. Webhooks solve this by providing instant, event-driven notifications that keep your systems in perfect sync.',
       steps: [
@@ -200,11 +201,14 @@ export const docsData = [
     slug: 'custom-workflows',
     title: 'Building Custom Workflows',
     description: 'Automate your business processes with powerful workflow automation',
-    category: 'guides',
-    status: 'published',
-    lastUpdated: '2026-03-18',
-    readTime: '12 min',
-    content: {
+    category: 'Guide Leads',
+    published: true,
+    updatedAt: '2026-03-18T12:00:00.000Z',
+    pageRoute: '/leads-guide',
+    updatedByUser: { id: 'mock-user-1', name: 'Documentation Team' },
+    mediaAssets: [],
+    content: '',
+    structuredContent: {
       context: 'Custom workflows in BusinessWith allow you to automate repetitive tasks and create sophisticated business processes without writing code. From simple email notifications to complex multi-step approval chains, workflows save time and reduce errors.',
       problem: 'Manual processes are time-consuming, error-prone, and difficult to scale. Employees waste hours on repetitive tasks that could be automated, leading to decreased productivity and increased operational costs.',
       steps: [
@@ -264,11 +268,14 @@ export const docsData = [
     slug: 'data-export',
     title: 'Data Export & Backup',
     description: 'Export your data in multiple formats for backup and analysis',
-    category: 'guides',
-    status: 'published',
-    lastUpdated: '2026-03-15',
-    readTime: '6 min',
-    content: {
+    category: 'Vendor Settings',
+    published: true,
+    updatedAt: '2026-03-15T12:00:00.000Z',
+    pageRoute: '/settings',
+    updatedByUser: { id: 'mock-user-1', name: 'Documentation Team' },
+    mediaAssets: [],
+    content: '',
+    structuredContent: {
       context: 'BusinessWith provides flexible data export options to ensure you always have access to your business data. Export to CSV, JSON, or Excel formats for backup, analysis, or migration purposes.',
       problem: 'Being locked into a platform without easy data access is risky. You need the ability to export your data for backups, compliance, reporting, and business intelligence.',
       steps: [
@@ -327,11 +334,14 @@ export const docsData = [
     slug: 'troubleshooting-common-errors',
     title: 'Troubleshooting Common Errors',
     description: 'Solutions to frequently encountered issues',
-    category: 'troubleshooting',
-    status: 'published',
-    lastUpdated: '2026-03-10',
-    readTime: '7 min',
-    content: {
+    category: 'Core',
+    published: true,
+    updatedAt: '2026-03-10T12:00:00.000Z',
+    pageRoute: '/settings',
+    updatedByUser: { id: 'mock-user-1', name: 'Documentation Team' },
+    mediaAssets: [],
+    content: '',
+    structuredContent: {
       context: 'This guide covers the most common errors users encounter in BusinessWith and provides step-by-step solutions. Most issues can be resolved quickly with the right troubleshooting approach.',
       problem: 'Technical errors can be frustrating and time-consuming. Having quick access to solutions helps you resolve issues faster and minimize downtime.',
       steps: [
@@ -395,11 +405,14 @@ export const docsData = [
     slug: 'rate-limits',
     title: 'Understanding Rate Limits',
     description: 'Learn about API rate limits and how to optimize your requests',
-    category: 'api',
-    status: 'published',
-    lastUpdated: '2026-03-12',
-    readTime: '5 min',
-    content: {
+    category: 'Systems & Providers',
+    published: true,
+    updatedAt: '2026-03-12T12:00:00.000Z',
+    pageRoute: '/integration-settings',
+    updatedByUser: { id: 'mock-user-1', name: 'Documentation Team' },
+    mediaAssets: [],
+    content: '',
+    structuredContent: {
       context: 'Rate limits protect our API infrastructure and ensure fair usage for all customers. Understanding and respecting these limits helps you build reliable integrations that work smoothly.',
       problem: 'Exceeding rate limits can cause your API requests to fail, disrupting your application. Proper rate limit management ensures consistent, reliable API access.',
       steps: [
@@ -455,11 +468,14 @@ export const docsData = [
     slug: 'advanced-filtering',
     title: 'Advanced Data Filtering',
     description: 'Master complex queries and filtering options',
-    category: 'guides',
-    status: 'published',
-    lastUpdated: '2026-03-14',
-    readTime: '9 min',
-    content: {
+    category: 'Buying Intent',
+    published: true,
+    updatedAt: '2026-03-14T12:00:00.000Z',
+    pageRoute: '/buying-intent-v2/:systemId',
+    updatedByUser: { id: 'mock-user-1', name: 'Documentation Team' },
+    mediaAssets: [],
+    content: '',
+    structuredContent: {
       context: 'Advanced filtering capabilities in BusinessWith allow you to build sophisticated queries to find exactly the data you need. From simple field matching to complex boolean logic, filters help you analyze and segment your business data.',
       problem: 'Finding specific records in large datasets manually is time-consuming and inefficient. Advanced filters enable precise data retrieval for reporting, segmentation, and analysis.',
       steps: [
@@ -527,12 +543,12 @@ export const getDocsByCategory = (categoryId) => {
 };
 
 export const getFeaturedDocs = () => {
-  return docsData.filter(doc => doc.featured);
+  return docsData.filter((doc) => doc.published).slice(0, 3);
 };
 
 export const getRecentDocs = (limit = 4) => {
   return [...docsData]
-    .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime())
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
     .slice(0, limit);
 };
 

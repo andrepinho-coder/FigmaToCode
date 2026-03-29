@@ -1,14 +1,11 @@
+import { useMemo } from "react";
 import { docPageAssets } from "../Data/docPageAssets.js";
-import {
-  categories,
-  docsData,
-  getFeaturedDocs,
-  getRecentDocs,
-} from "../Data/docs-data.js";
+import { docsData, getFeaturedDocs, getRecentDocs } from "../Data/docs-data.js";
+import { documentationCategoriesFromDocs } from "../Data/docs-categories.js";
 import DocPageCard from "../components/DocPageCard.jsx";
 import DocSearchEmpty from "../components/DocSearchEmpty.jsx";
 import DocPageMode from "../components/DocPageMode.jsx";
-import { HERO, useDocPageModel } from "../model/DocPage.js";
+import { useDocPageModel } from "../model/useDocPageModel.js";
 import { DOC_COLORS } from "../theme/colors.js";
 import { DOC_STRINGS } from "../theme/strings.js";
 import { DOC_TYPO } from "../theme/typography.js";
@@ -23,6 +20,11 @@ function DocPageSectionTitle({ icon, title }) {
 }
 
 export default function DocPage({ onOpenDetails }) {
+  const categories = useMemo(
+    () => documentationCategoriesFromDocs(docsData),
+    [docsData],
+  );
+
   const {
     startHere,
     recentUpdates,
@@ -63,7 +65,7 @@ export default function DocPage({ onOpenDetails }) {
               src={docPageAssets.heroPillIcon}
             />
             <span className="text-sm font-medium leading-5">
-              {HERO.pillText}
+              {DOC_STRINGS.hero.pill}
             </span>
           </div>
 
@@ -75,13 +77,13 @@ export default function DocPage({ onOpenDetails }) {
             }}
             data-node-id="2:11"
           >
-            {DOC_STRINGS.hero.title ?? HERO.title}
+            {DOC_STRINGS.hero.title}
           </h1>
           <p
             className="mt-4 mb-0 text-center text-xl font-normal leading-7 text-(--muted)"
             data-node-id="2:13"
           >
-            {DOC_STRINGS.hero.subtitle ?? HERO.subtitle}
+            {DOC_STRINGS.hero.subtitle}
           </p>
         </div>
 
@@ -94,7 +96,7 @@ export default function DocPage({ onOpenDetails }) {
           <input
             type="text"
             value={query}
-            placeholder={DOC_STRINGS.hero.searchPlaceholder ?? HERO.searchPlaceholder}
+            placeholder={DOC_STRINGS.hero.searchPlaceholder}
             className="w-full border-none bg-transparent text-base leading-6 outline-none placeholder:text-[rgba(10,10,10,0.5)]"
             style={{ color: DOC_COLORS.text.heading }}
             onChange={(e) => setQuery(e.target.value)}
